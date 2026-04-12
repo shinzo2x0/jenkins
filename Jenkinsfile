@@ -79,7 +79,7 @@ pipeline {
 					export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
 					export AWS_DEFAULT_REGION=$AWS_REGION
 
-					aws s3 cp pics/ s3://jenkins-bucket-20260330023333843200000001/pics/ --recursive
+					aws s3 sync pics/ s3://jenkins-bucket-20260330023333843200000001/pics/
 					'''
 				}
 			}
