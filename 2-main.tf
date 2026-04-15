@@ -32,3 +32,12 @@ resource "aws_s3_bucket_policy" "frontend_policy" {
     ]
   })
 }
+
+resource "aws_s3_bucket_object" "images" {
+  for_each = fileset("${path.module}/pics", "*")
+
+  bucket = aws_s3_bucket.frontend.id
+  key    = "pics/${each.value}"
+  source = "${path.module}/pics/${each.value}"
+  etag   = filemd5("${path.module}/pics/${each.value}")
+}
