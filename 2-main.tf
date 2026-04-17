@@ -33,6 +33,18 @@ resource "aws_s3_bucket_policy" "frontend_policy" {
   })
 }
 
+locals {
+  mime_types = {
+    ".jpg"  = "image/jpeg"
+    ".jpeg" = "image/jpeg"
+    ".png"  = "image/png"
+    ".gif"  = "image/gif"
+    ".html" = "text/html"
+    ".css"  = "text/css"
+    ".js"   = "application/javascript"
+  }
+}
+
 resource "aws_s3_bucket_object" "images" {
   for_each = fileset("${path.module}/pics", "*")
 
@@ -40,4 +52,16 @@ resource "aws_s3_bucket_object" "images" {
   key    = "pics/${each.value}"
   source = "${path.module}/pics/${each.value}"
   etag   = filemd5("${path.module}/pics/${each.value}")
+  
+    content_type = lookup(
+    local.mime_types,
+    regex("\\.[^.]+$", each.value),
+    "application/octet-stream"
+  )
+  
+    metadata = {
+    extension = regex("\\.[^.]+$", each.value)
+  }
+  
 }
+
